@@ -6,13 +6,15 @@
 
 //digital pins
 #define LEFT_SERVO_PIN 9
-#define RIGHT_SERVO_PIN 11
 #define LEFT_BLDC_PIN 10
+#define RIGHT_SERVO_PIN 11
 #define RIGHT_BLDC_PIN 12
 
 //analog pins
 #define LEFT_ENCODER_PIN A0
 #define RIGHT_ENCODER_PIN A1
+#define SDA_PIN A4
+#define SCL_PIN A5
 
 //physical calibration parameters for motors
 #define LEFT_ANGLE_VERTICAL 130//value of the servo angle that results in the nacelle being vertical

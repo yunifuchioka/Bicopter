@@ -9,23 +9,17 @@ IMU imu(SDA_PIN, SCL_PIN);
 void setup() {
     Serial.begin(9600);
 
-    pinMode(2, INPUT_PULLUP);
-    pinMode(3, INPUT_PULLUP);
-
     motors.attachMotors();
     imu.initialize();
 }
 
 void loop() {
-
+    
     /*
-    bool leftButton = !digitalRead(3);
-    bool rightButton = !digitalRead(2);
-
     int leftPot = analogRead(A3);
     int rightPot = analogRead(A2);
 
-    int u1 = (leftButton)? 135 : ((rightButton)? -45 : 90);
+    int u1 = map(rightPot, 0, 1023, 135, -45);
 
     int u3 = map(leftPot, 0, 1023, 0, 1000);
 

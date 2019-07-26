@@ -21,10 +21,10 @@ void Motors::attachMotors() { //Servo.attach needs to be called in a function ou
 }
 
 void Motors::writeMotors(int u1, int u2,  int u3, int u4) {
-    leftServo.write(u1 - 90 + LEFT_ANGLE_VERTICAL); //uncomment after remounting servo
-    rightServo.write(-u2 + 90 + RIGHT_ANGLE_VERTICAL);
-    leftBLDC.writeMicroseconds(u3 + 1000);
-    rightBLDC.writeMicroseconds(u4 + 1000);
+    leftServo.write(max(min(u1 - 90 + LEFT_ANGLE_VERTICAL, SERVO_MAX),SERVO_MIN));
+    rightServo.write(max(min(-u2 + 90 + RIGHT_ANGLE_VERTICAL, SERVO_MAX),SERVO_MIN));
+    leftBLDC.writeMicroseconds(max(min(u3 + PWM_MIN, PWM_MAX),PWM_MIN));
+    rightBLDC.writeMicroseconds(max(min(u4 + PWM_MIN, PWM_MAX),PWM_MIN));
 }
 
 int Motors::get_y1() {

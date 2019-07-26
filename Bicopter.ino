@@ -2,53 +2,43 @@
 #include "Constants.h"
 #include "Motors.h"
 #include "IMU.h"
+#include "FlySkyIBus.h"
 
 Motors motors(LEFT_SERVO_PIN, RIGHT_SERVO_PIN, LEFT_BLDC_PIN, RIGHT_BLDC_PIN, LEFT_ENCODER_PIN, RIGHT_ENCODER_PIN);
-IMU imu(SDA_PIN, SCL_PIN);
+
+//IMU imu(SDA_PIN, SCL_PIN);
 
 void setup() {
-    Serial.begin(9600);
+    Serial.begin(115200);
 
     motors.attachMotors();
-    imu.initialize();
+    IBus.begin(Serial);
+    //imu.initialize();
 }
 
 void loop() {
+    IBus.loop();
+
+    double yawSensitivity = (IBus.readChannel(4)-PWM_MIN)/1000.0;
+    //double pitchSensitivity = (IBus.readChannel(5)-PWM_MIN)/1000.0;
+    double pitchSensitivity = 1.0;
+    double rollSensitivity = (IBus.readChannel(5)-PWM_MIN)/1000.0;
     
-    /*
-    int leftPot = analogRead(A3);
-    int rightPot = analogRead(A2);
+    int yaw = (int) map(IBus.readChannel(0), PWM_MIN, PWM_MAX, 45, -45)*yawSensitivity;
+    int pitch = (int) map(IBus.readChannel(1), PWM_MIN, PWM_MAX, 45, -45)*pitchSensitivity + 90;
+    int BLDCSpeed = map(IBus.readChannel(2), PWM_MIN, PWM_MAX, 0, 1000);
+    int roll = map(IBus.readChannel(3), PWM_MIN, PWM_MAX, -300, 300)*rollSensitivity;
 
-    int u1 = map(rightPot, 0, 1023, 135, -45);
+    int u1 = pitch + yaw;
+    int u2 = pitch - yaw;
+    int u3 = BLDCSpeed + roll;
+    int u4 = BLDCSpeed - roll;
 
-    int u3 = map(leftPot, 0, 1023, 0, 1000);
+    if (IBus.readChannel(0) == 0) {
+        motors.writeMotors(90, 90, 0, 0);
+    }
+    else {
+        motors.writeMotors(u1, u2, u3, u4);
+    }
 
-    motors.writeMotors(u1, u1, u3, u3);
-    
-    Serial.print(u1);
-    Serial.print('\t');
-    Serial.print(u3);
-    Serial.print('\t');
-    Serial.print(motors.get_y1());
-    Serial.print('\t');
-    Serial.print(motors.get_y2());
-    Serial.print('\t');
-    Serial.print(millis());
-    Serial.print('\n');
-    */
-
-    //IMU test
-    IMUReading imuReading = imu.read();
-    Serial.print(imuReading.ax);
-    Serial.print('\t');
-    Serial.print(imuReading.ay);
-    Serial.print('\t');
-    Serial.print(imuReading.az);
-    Serial.print('\t');
-    Serial.print(imuReading.gx);
-    Serial.print('\t');
-    Serial.print(imuReading.gy);
-    Serial.print('\t');
-    Serial.print(imuReading.gz);
-    Serial.print('\n');
 }

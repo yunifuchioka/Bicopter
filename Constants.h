@@ -24,4 +24,9 @@
 #define RIGHT_ENCODER_MIN 115 //the analog value of the feedback wire when u2 = 135
 #define RIGHT_ENCODER_MAX 472 //the analog value of the feedback wire when u2 = -45
 
+#define PWM_MIN 1000 //min pulse width for PWM for servo signals
+#define PWM_MAX 2000 //max pulse width for PWM for servo signals
+#define SERVO_MIN 0 //min angle for servo signals
+#define SERVO_MAX 180 //max angle for servo signals
+
 #endif

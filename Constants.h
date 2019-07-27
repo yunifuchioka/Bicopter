@@ -5,6 +5,7 @@
 #include "Arduino.h"
 
 //digital pins
+#define SERIAL_RX_PIN 0
 #define LEFT_SERVO_PIN 9
 #define LEFT_BLDC_PIN 10
 #define RIGHT_SERVO_PIN 11

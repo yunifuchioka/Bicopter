@@ -1,8 +1,8 @@
 
 #include "Constants.h"
 #include "Motors.h"
-#include "IMU.h"
-#include "FlySkyIBus.h"
+#include "IMU.h" //requires I2Cdev https://github.com/jrowberg/i2cdevlib
+#include "FlySkyIBus.h" //https://gitlab.com/timwilkinson/FlySkyIBus
 
 Motors motors(LEFT_SERVO_PIN, RIGHT_SERVO_PIN, LEFT_BLDC_PIN, RIGHT_BLDC_PIN, LEFT_ENCODER_PIN, RIGHT_ENCODER_PIN);
 

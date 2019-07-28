@@ -2,10 +2,9 @@
 #ifndef CONSTANTS_H
 #define CONSTANTS_H
 
-#include "Arduino.h"
-
 //digital pins
 #define SERIAL_RX_PIN 0
+#define INTERRUPT_PIN 2
 #define LEFT_SERVO_PIN 9
 #define LEFT_BLDC_PIN 10
 #define RIGHT_SERVO_PIN 11

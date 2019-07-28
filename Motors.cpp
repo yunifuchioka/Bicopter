@@ -1,8 +1,6 @@
 
-#include "Arduino.h"
 #include "Motors.h"
 #include "Constants.h"
-#include <Servo.h>
 
 Motors::Motors(int leftServoPin, int rightServoPin, int leftBLDCPin, int rightBLDCPin, int leftEncoderPin, int rightEncoderPin) {
     _leftServoPin = leftServoPin;
@@ -18,6 +16,7 @@ void Motors::attachMotors() { //Servo.attach needs to be called in a function ou
     rightServo.attach(_rightServoPin);
     leftBLDC.attach(_leftBLDCPin);
     rightBLDC.attach(_rightBLDCPin);
+    writeMotors(90,90,0,0);
 }
 
 void Motors::writeMotors(int u1, int u2,  int u3, int u4) {

@@ -40,9 +40,8 @@ void loop() {
     Serial.print(imu.read().roll);
     Serial.print('\n');
 
-    motors.writeMotors(90, 90, 0, 0);
-
-    /*
+    //motors.writeMotors(90, 90, 0, 0);
+    
     double yawSensitivity = (IBus.readChannel(4)-PWM_MIN)/1000.0;
     //double pitchSensitivity = (IBus.readChannel(5)-PWM_MIN)/1000.0;
     double pitchSensitivity = 1.0;
@@ -64,6 +63,5 @@ void loop() {
     else {
         motors.writeMotors(u1, u2, u3, u4);
     }
-    */
 
 }

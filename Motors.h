@@ -14,12 +14,12 @@ class Motors {
         int get_y2(); //returns reading of right encoder (in absolute coordinates)
 
     private:
-        int _leftServoPin;
-        int _rightServoPin;
-        int _leftBLDCPin;
-        int _rightBLDCPin;
-        int _leftEncoderPin;
-        int _rightEncoderPin;
+        int leftServoPin;
+        int rightServoPin;
+        int leftBLDCPin;
+        int rightBLDCPin;
+        int leftEncoderPin;
+        int rightEncoderPin;
         Servo leftServo;
         Servo rightServo;
         Servo leftBLDC;

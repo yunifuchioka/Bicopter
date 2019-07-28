@@ -14,9 +14,9 @@
 
 
 IMU::IMU(int SDAPin, int SCLPin, int interruptPin) {
-    _SDAPin = SDAPin;
-    _SCLPin = SCLPin;
-    _interruptPin = interruptPin;
+    this->SDAPin = SDAPin;
+    this->SCLPin = SCLPin;
+    this->interruptPin = interruptPin;
 }
 
 bool IMU::initialize() { //returns false if anything goes wrong
@@ -47,41 +47,41 @@ bool IMU::initialize() { //returns false if anything goes wrong
     mpu6050.CalibrateGyro(6);
     mpu6050.setDMPEnabled(true);
 
-    _mpuIntStatus = mpu6050.getIntStatus();
-    _packetSize = mpu6050.dmpGetFIFOPacketSize();
+    mpuIntStatus = mpu6050.getIntStatus();
+    packetSize = mpu6050.dmpGetFIFOPacketSize();
 
     return true;
 }
 
 bool IMU::packetAvailable() {
-    _fifoCount = mpu6050.getFIFOCount();
-    return (_fifoCount > _packetSize);
+    fifoCount = mpu6050.getFIFOCount();
+    return (fifoCount > packetSize);
 }
 
 bool IMU::update() {
     //IMUReading returnVal;
-    _mpuIntStatus = mpu6050.getIntStatus();
-    _fifoCount = mpu6050.getFIFOCount();
+    mpuIntStatus = mpu6050.getIntStatus();
+    fifoCount = mpu6050.getFIFOCount();
 
-    if(_fifoCount < _packetSize){
+    if(fifoCount < packetSize){
         //Lets go back and wait for another interrupt. We shouldn't be here, we got an interrupt from another event
         return false;
     }
     // check for overflow (this should never happen unless our code is too inefficient)
-    else if ((_mpuIntStatus & _BV(MPU6050_INTERRUPT_FIFO_OFLOW_BIT)) || _fifoCount >= 1024) {
+    else if ((mpuIntStatus & _BV(MPU6050_INTERRUPT_FIFO_OFLOW_BIT)) || fifoCount >= 1024) {
         // reset so we can continue cleanly
         mpu6050.resetFIFO();
         return false;
     } // otherwise, check for DMP data ready interrupt (this should happen frequently)
-    else if (_mpuIntStatus & _BV(MPU6050_INTERRUPT_DMP_INT_BIT)) {
+    else if (mpuIntStatus & _BV(MPU6050_INTERRUPT_DMP_INT_BIT)) {
         // read a packet from FIFO
-        while(_fifoCount >= _packetSize){ // Lets catch up to NOW, someone is using the dreaded delay()!
-            mpu6050.getFIFOBytes(_fifoBuffer, _packetSize);
+        while(fifoCount >= packetSize){ // Lets catch up to NOW, someone is using the dreaded delay()!
+            mpu6050.getFIFOBytes(fifoBuffer, packetSize);
             // track FIFO count here in case there is > 1 packet available
             // (this lets us immediately read more without waiting for an interrupt)
-            _fifoCount -= _packetSize;
+            fifoCount -= packetSize;
         }
-        mpu6050.dmpGetQuaternion(&q, _fifoBuffer);
+        mpu6050.dmpGetQuaternion(&q, fifoBuffer);
         mpu6050.dmpGetGravity(&gravity, &q);
         mpu6050.dmpGetYawPitchRoll(ypr, &q, &gravity);
     }

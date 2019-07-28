@@ -29,4 +29,21 @@
 #define SERVO_MIN 0 //min angle for servo signals
 #define SERVO_MAX 180 //max angle for servo signals
 
+/*
+ * Watchdog timer https://folk.uio.no/jeanra/Microelectronics/ArduinoWatchdog.html
+ * 
+ * Watchdog timer value table
+ * 15mS                           WDTO_15MS
+ * 30mS                           WDTO_30MS
+ * 60mS                           WDTO_60MS
+ * 120mS                          WDTO_120MS
+ * 250mS                          WDTO_250MS
+ * 500mS                          WDTO_500MS
+ * 1S                             WDTO_1S            
+ * 2S                             WDTO_2S
+ * 4S                             WDTO_4S
+ * 8S                             WDTO_8S
+ */
+#define WATCHDOG_TIME WDTO_1S
+
 #endif

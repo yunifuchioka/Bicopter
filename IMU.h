@@ -13,7 +13,6 @@ class IMU {
     public:
         IMU(int SDAPin, int SCLPin, int interruptPin);
         bool initialize();
-        bool packetAvailable();
         bool update();
         IMUReading read();
         

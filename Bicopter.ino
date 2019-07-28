@@ -1,4 +1,5 @@
 
+#include <avr/wdt.h> //watchdog
 #include "Constants.h"
 #include "Motors.h"
 #include "IMU.h" //requires I2Cdev https://github.com/jrowberg/i2cdevlib
@@ -23,12 +24,15 @@ void setup() {
     if (!imu.initialize()) {
         while (true) { Serial.println("dmp initialization failure"); }
     }
+    
+    wdt_enable(WATCHDOG_TIME); //initialize watchdog. This needs to happen at the end since imu initialization takes a while
 }
 
 void loop() {
+    wdt_reset(); //reset watchdog
     IBus.loop();
 
-    if (imuInterrupt || imu.packetAvailable()) {
+    if (imuInterrupt) {
         imuInterrupt = false;
         imu.update();
     }

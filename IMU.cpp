@@ -53,13 +53,7 @@ bool IMU::initialize() { //returns false if anything goes wrong
     return true;
 }
 
-bool IMU::packetAvailable() {
-    fifoCount = mpu6050.getFIFOCount();
-    return (fifoCount > packetSize);
-}
-
 bool IMU::update() {
-    //IMUReading returnVal;
     mpuIntStatus = mpu6050.getIntStatus();
     fifoCount = mpu6050.getFIFOCount();
 
@@ -76,7 +70,7 @@ bool IMU::update() {
     else if (mpuIntStatus & _BV(MPU6050_INTERRUPT_DMP_INT_BIT)) {
         // read a packet from FIFO
         while(fifoCount >= packetSize){ // Lets catch up to NOW, someone is using the dreaded delay()!
-            mpu6050.getFIFOBytes(fifoBuffer, packetSize);
+            mpu6050.getFIFOBytes(fifoBuffer, packetSize); //warning: it was observed that getFIFOBytes can hang occasionally
             // track FIFO count here in case there is > 1 packet available
             // (this lets us immediately read more without waiting for an interrupt)
             fifoCount -= packetSize;
@@ -92,9 +86,9 @@ bool IMU::update() {
 
 IMUReading IMU::read() {
     IMUReading returnVal;
-    returnVal.yaw = ypr[0];
-    returnVal.pitch = ypr[1];
-    returnVal.roll = ypr[2];
+    returnVal.yaw = ypr[0] * 180/M_PI;
+    returnVal.pitch = ypr[1] * 180/M_PI;
+    returnVal.roll = ypr[2] * 180/M_PI;
     
     return returnVal;
 }

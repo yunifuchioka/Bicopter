@@ -31,41 +31,82 @@ void setup() {
 void loop() {
     wdt_reset(); //reset watchdog
     IBus.loop();
-
     if (imuInterrupt) {
         imuInterrupt = false;
         imu.update();
     }
 
+    /*
     Serial.print(imu.read().yaw);
     Serial.print('\t');
     Serial.print(imu.read().pitch);
     Serial.print('\t');
     Serial.print(imu.read().roll);
     Serial.print('\n');
+    */
 
-    //motors.writeMotors(90, 90, 0, 0);
-    
-    double yawSensitivity = (IBus.readChannel(4)-PWM_MIN)/1000.0;
-    //double pitchSensitivity = (IBus.readChannel(5)-PWM_MIN)/1000.0;
-    double pitchSensitivity = 1.0;
-    double rollSensitivity = (IBus.readChannel(5)-PWM_MIN)/1000.0;
-    
-    int yaw = (int) map(IBus.readChannel(0), PWM_MIN, PWM_MAX, 45, -45)*yawSensitivity;
-    int pitch = (int) map(IBus.readChannel(1), PWM_MIN, PWM_MAX, 45, -45)*pitchSensitivity + 90;
-    int BLDCSpeed = map(IBus.readChannel(2), PWM_MIN, PWM_MAX, 0, 1000);
-    int roll = map(IBus.readChannel(3), PWM_MIN, PWM_MAX, -300, 300)*rollSensitivity;
+    bool manualControl = (IBus.readChannel(6)-PWM_MIN > (PWM_MAX-PWM_MIN)/2);
 
-    int u1 = pitch + yaw;
-    int u2 = pitch - yaw;
-    int u3 = BLDCSpeed + roll;
-    int u4 = BLDCSpeed - roll;
+    int yawApplied = 0;
+    int pitchApplied = 0;
+    int rollApplied = 0;
 
-    if (IBus.readChannel(0) == 0) {
-        motors.writeMotors(90, 90, 0, 0);
+    if (manualControl) {
+        double yawSensitivity = (IBus.readChannel(4)-PWM_MIN)/1000.0;
+        //double pitchSensitivity = (IBus.readChannel(5)-PWM_MIN)/1000.0;
+        double pitchSensitivity = 1.0;
+        double rollSensitivity = (IBus.readChannel(5)-PWM_MIN)/1000.0;
+        
+        yawApplied = (int) map(IBus.readChannel(0), PWM_MIN, PWM_MAX, -45, 45)*yawSensitivity;
+        pitchApplied = (int) map(IBus.readChannel(1), PWM_MIN, PWM_MAX, 45, -45)*pitchSensitivity;
+        rollApplied = map(IBus.readChannel(3), PWM_MIN, PWM_MAX, -300, 300)*rollSensitivity;
     }
     else {
-        motors.writeMotors(u1, u2, u3, u4);
+        int yawDes = 0;
+        int pitchDes = 0;
+        int rollDes = 0;
+        int yawDotDes = 0;
+        int pitchDotDes = 0;
+        int rollDotDes = 0;
+        
+        int yaw = imu.read().yaw;
+        int pitch = imu.read().pitch;
+        int roll = imu.read().roll;
+        int yawDot = 0; //TODO: sync these with gyro measurements
+        int pitchDot = 0;
+        int rollDot = 0;
+
+        int kpYaw = 1;
+        int kdYaw = 0;
+        int kpPitch = 1;
+        int kdPitch = 0;
+        int kpRoll = 5;
+        int kdRoll = 0;
+
+        yawApplied = kpYaw*(yawDes-yaw) + kdYaw*(yawDotDes-yawDot);
+        pitchApplied = kpPitch*(pitchDes-pitch) + kdPitch*(pitchDotDes-pitchDot);
+        rollApplied = kpRoll*(rollDes-roll) + kdRoll*(rollDotDes-rollDot);
     }
 
+    int BLDCSpeed = map(IBus.readChannel(2), PWM_MIN, PWM_MAX, 0, 1000);
+
+    int u1 = 90;
+    int u2 = 90;
+    int u3 = 0;
+    int u4 = 0;
+
+    if (IBus.readChannel(0) == 0) { //no signal received from RC receiver
+        u1 = 90;
+        u2 = 90;
+        u3 = 0;
+        u4 = 0;
+    }
+    else {
+        u1 = 90 + pitchApplied - yawApplied;
+        u2 = 90 + pitchApplied + yawApplied;
+        u3 = BLDCSpeed + rollApplied;
+        u4 = BLDCSpeed - rollApplied;
+    }
+
+    motors.writeMotors(u1, u2, u3, u4);
 }

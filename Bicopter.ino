@@ -18,6 +18,7 @@ void setup() {
     Serial.begin(115200);
     pinMode(INTERRUPT_PIN, INPUT);
     attachInterrupt(digitalPinToInterrupt(INTERRUPT_PIN), imuInterruptISR, RISING);
+    pinMode(LED_PIN, OUTPUT);
 
     motors.attachMotors();
     IBus.begin(Serial);
@@ -25,6 +26,7 @@ void setup() {
         while (true) { Serial.println("dmp initialization failure"); }
     }
     
+    digitalWrite(LED_PIN, HIGH);
     wdt_enable(WATCHDOG_TIME); //initialize watchdog. This needs to happen at the end since imu initialization takes a while
 }
 
@@ -76,11 +78,11 @@ void loop() {
         int pitchDot = 0;
         int rollDot = 0;
 
-        int kpYaw = 1;
+        int kpYaw = 0;
         int kdYaw = 0;
-        int kpPitch = 1;
+        int kpPitch = 2;
         int kdPitch = 0;
-        int kpRoll = 5;
+        int kpRoll = 2;
         int kdRoll = 0;
 
         yawApplied = kpYaw*(yawDes-yaw) + kdYaw*(yawDotDes-yawDot);

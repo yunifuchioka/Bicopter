@@ -5,10 +5,11 @@
 //digital pins
 #define SERIAL_RX_PIN 0
 #define INTERRUPT_PIN 2
-#define LEFT_SERVO_PIN 9
-#define LEFT_BLDC_PIN 10
-#define RIGHT_SERVO_PIN 11
-#define RIGHT_BLDC_PIN 12
+#define LEFT_SERVO_PIN 4
+#define LEFT_BLDC_PIN 5
+#define RIGHT_SERVO_PIN 6
+#define RIGHT_BLDC_PIN 7
+#define LED_PIN 13
 
 //analog pins
 #define LEFT_ENCODER_PIN A0

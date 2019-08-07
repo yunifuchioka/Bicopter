@@ -39,64 +39,20 @@ void loop() {
         imu.update();
     }
 
-    Serial.print(rc.getLeftVer());
-    Serial.print(' ');
-    Serial.print(rc.getLeftHor());
-    Serial.print(' ');
-    Serial.print(rc.getRightVer());
-    Serial.print(' ');
-    Serial.print(rc.getRightHor());
-    Serial.print(' ');
-    Serial.print(rc.getVRA());
-    Serial.print(' ');
-    Serial.print(rc.getVRB());
-    Serial.print(' ');
-    Serial.print(rc.getSWA());
-    Serial.print(' ');
-    Serial.print(rc.getSWB());
-    Serial.print(' ');
-    Serial.print(rc.getSWC());
-    Serial.print(' ');
-    Serial.print(rc.getSWD());
-    Serial.print('\n');
-
-    
-
-    /*
-    Serial.print(imu.read().yaw);
-    Serial.print('\t');
-    Serial.print(imu.read().pitch);
-    Serial.print('\t');
-    Serial.print(imu.read().roll);
-    Serial.print('\n');
-    */
-
-    /*
-
-    bool manualControl = (IBus.readChannel(6)-PWM_MIN > (PWM_MAX-PWM_MIN)/2);
-
     int yawApplied = 0;
     int pitchApplied = 0;
     int rollApplied = 0;
 
-    if (manualControl) {
-        double yawSensitivity = (IBus.readChannel(4)-PWM_MIN)/1000.0;
-        //double pitchSensitivity = (IBus.readChannel(5)-PWM_MIN)/1000.0;
-        double pitchSensitivity = 1.0;
-        double rollSensitivity = (IBus.readChannel(5)-PWM_MIN)/1000.0;
-        
-        yawApplied = (int) map(IBus.readChannel(0), PWM_MIN, PWM_MAX, -45, 45)*yawSensitivity;
-        pitchApplied = (int) map(IBus.readChannel(1), PWM_MIN, PWM_MAX, 45, -45)*pitchSensitivity;
-        rollApplied = map(IBus.readChannel(3), PWM_MIN, PWM_MAX, -300, 300)*rollSensitivity;
-    }
-    else {
+    if (rc.getSWD()) { //if switch D is activated, apply feedback control
+        //target orientation
         int yawDes = 0;
         int pitchDes = 0;
         int rollDes = 0;
         int yawDotDes = 0;
         int pitchDotDes = 0;
         int rollDotDes = 0;
-        
+
+        //IMU readings
         int yaw = imu.read().yaw;
         int pitch = imu.read().pitch;
         int roll = imu.read().roll;
@@ -104,6 +60,7 @@ void loop() {
         int pitchDot = 0;
         int rollDot = 0;
 
+        //PD feedback control parameters
         int kpYaw = 0;
         int kdYaw = 0;
         int kpPitch = 2;
@@ -111,31 +68,29 @@ void loop() {
         int kpRoll = 2;
         int kdRoll = 0;
 
+        //PD feedback control
         yawApplied = kpYaw*(yawDes-yaw) + kdYaw*(yawDotDes-yawDot);
         pitchApplied = kpPitch*(pitchDes-pitch) + kdPitch*(pitchDotDes-pitchDot);
         rollApplied = kpRoll*(rollDes-roll) + kdRoll*(rollDotDes-rollDot);
     }
+    else { //if switch D is not activated, motors are operated manually
+        //set sensitivity of servo angles based on position of variable resistors
+        double yawSensitivity = rc.getVRA()/1000.0;
+        //double pitchSensitivity = rc.getVRB()/1000.0;
+        double pitchSensitivity = 1.0;
+        double rollSensitivity = rc.getVRB()/1000.0;
 
-    int BLDCSpeed = map(IBus.readChannel(2), PWM_MIN, PWM_MAX, 0, 1000);
-
-    int u1 = 90;
-    int u2 = 90;
-    int u3 = 0;
-    int u4 = 0;
-
-    if (IBus.readChannel(0) == 0) { //no signal received from RC receiver
-        u1 = 90;
-        u2 = 90;
-        u3 = 0;
-        u4 = 0;
+        yawApplied = (int) map(rc.getRightHor(), SPEED_MIN, SPEED_MAX, -45, 45)*yawSensitivity;
+        pitchApplied = (int) map(rc.getRightVer(), SPEED_MIN, SPEED_MAX, 45, -45)*pitchSensitivity;
+        rollApplied = map(rc.getLeftHor(), SPEED_MIN, SPEED_MAX, -300, 300)*rollSensitivity;
     }
-    else {
-        u1 = 90 + pitchApplied - yawApplied;
-        u2 = 90 + pitchApplied + yawApplied;
-        u3 = BLDCSpeed + rollApplied;
-        u4 = BLDCSpeed - rollApplied;
-    }
+
+    int BLDCSpeed = rc.getLeftVer();
+
+    int u1 = 90 + pitchApplied - yawApplied;
+    int u2 = 90 + pitchApplied + yawApplied;
+    int u3 = rc.getSWA() ? BLDCSpeed + rollApplied : 0; //if switch A is turned off, set BLDC speed to 0
+    int u4 = rc.getSWA() ? BLDCSpeed - rollApplied : 0;
 
     motors.writeMotors(u1, u2, u3, u4);
-    */
 }

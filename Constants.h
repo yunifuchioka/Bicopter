@@ -27,6 +27,8 @@
 
 #define PWM_MIN 1000 //min pulse width for PWM for servo signals
 #define PWM_MAX 2000 //max pulse width for PWM for servo signals
+#define SPEED_MIN 0 //minimum value used for speed signals
+#define SPEED_MAX 1000 //maximum value used for speed signals
 #define SERVO_MIN 0 //min angle for servo signals
 #define SERVO_MAX 180 //max angle for servo signals
 

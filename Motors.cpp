@@ -20,10 +20,15 @@ void Motors::attachMotors() { //Servo.attach needs to be called in a function ou
 }
 
 void Motors::writeMotors(int u1, int u2,  int u3, int u4) {
-    leftServo.write(max(min(u1 - 90 + LEFT_ANGLE_VERTICAL, SERVO_MAX),SERVO_MIN));
-    rightServo.write(max(min(-u2 + 90 + RIGHT_ANGLE_VERTICAL, SERVO_MAX),SERVO_MIN));
-    leftBLDC.writeMicroseconds(max(min(u3 + PWM_MIN, PWM_MAX),PWM_MIN));
-    rightBLDC.writeMicroseconds(max(min(u4 + PWM_MIN, PWM_MAX),PWM_MIN));
+    int leftServoVal = max(min(u1 - 90 + LEFT_ANGLE_VERTICAL, SERVO_MAX),SERVO_MIN);
+    int rightServoVal = max(min(-u2 + 90 + RIGHT_ANGLE_VERTICAL, SERVO_MAX),SERVO_MIN);
+    int leftBLDCVal = max(min(map(u3, SPEED_MIN, SPEED_MAX, PWM_MIN, PWM_MAX), PWM_MAX),PWM_MIN);
+    int rightBLDCVal = max(min(map(u4, SPEED_MIN, SPEED_MAX, PWM_MIN, PWM_MAX), PWM_MAX),PWM_MIN);
+
+    leftServo.write(leftServoVal);
+    rightServo.write(rightServoVal);
+    leftBLDC.write(leftBLDCVal);
+    rightBLDC.write(rightBLDCVal);
 }
 
 int Motors::get_y1() {

@@ -12,26 +12,26 @@ void RC::loop() {
 }
 
 int RC::getLeftVer() {
-    return map(IBus.readChannel(2), PWM_MIN, PWM_MAX, 0, 1000);
+    return map(IBus.readChannel(2), PWM_MIN, PWM_MAX, SPEED_MIN, SPEED_MAX);
 }
 
 int RC::getLeftHor() {
-    return map(IBus.readChannel(3), PWM_MIN, PWM_MAX, 0, 1000);
+    return map(IBus.readChannel(3), PWM_MIN, PWM_MAX, SPEED_MIN, SPEED_MAX);
 }
 int RC::getRightVer() {
-    return map(IBus.readChannel(1), PWM_MIN, PWM_MAX, 0, 1000);
+    return map(IBus.readChannel(1), PWM_MIN, PWM_MAX, SPEED_MIN, SPEED_MAX);
 }
 
 int RC::getRightHor() {
-    return map(IBus.readChannel(0), PWM_MIN, PWM_MAX, 0, 1000);
+    return map(IBus.readChannel(0), PWM_MIN, PWM_MAX, SPEED_MIN, SPEED_MAX);
 }
 
 int RC::getVRA() {
-    return map(IBus.readChannel(4), PWM_MIN, PWM_MAX, 0, 1000);
+    return map(IBus.readChannel(4), PWM_MIN, PWM_MAX, SPEED_MIN, SPEED_MAX);
 }
 
 int RC::getVRB() {
-    return map(IBus.readChannel(5), PWM_MIN, PWM_MAX, 0, 1000);
+    return map(IBus.readChannel(5), PWM_MIN, PWM_MAX, SPEED_MIN, SPEED_MAX);
 }
 
 bool RC::getSWA() {

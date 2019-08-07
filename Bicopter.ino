@@ -3,10 +3,11 @@
 #include "Constants.h"
 #include "Motors.h"
 #include "IMU.h" //requires I2Cdev https://github.com/jrowberg/i2cdevlib
-#include "FlySkyIBus.h" //https://gitlab.com/timwilkinson/FlySkyIBus
+#include "RC.h" //requires FlySkyIBus https://github.com/jrowberg/i2cdevlib
 
 Motors motors(LEFT_SERVO_PIN, RIGHT_SERVO_PIN, LEFT_BLDC_PIN, RIGHT_BLDC_PIN, LEFT_ENCODER_PIN, RIGHT_ENCODER_PIN);
 IMU imu(SDA_PIN, SCL_PIN, INTERRUPT_PIN);
+RC rc;
 
 //Interrupt service routine (ISR) triggered by IMU
 volatile bool imuInterrupt = false; // indicates whether MPU interrupt pin has gone high
@@ -21,7 +22,7 @@ void setup() {
     pinMode(LED_PIN, OUTPUT);
 
     motors.attachMotors();
-    IBus.begin(Serial);
+    rc.begin(Serial);
     if (!imu.initialize()) {
         while (true) { Serial.println("dmp initialization failure"); }
     }
@@ -32,11 +33,34 @@ void setup() {
 
 void loop() {
     wdt_reset(); //reset watchdog
-    IBus.loop();
+    rc.loop();
     if (imuInterrupt) {
         imuInterrupt = false;
         imu.update();
     }
+
+    Serial.print(rc.getLeftVer());
+    Serial.print(' ');
+    Serial.print(rc.getLeftHor());
+    Serial.print(' ');
+    Serial.print(rc.getRightVer());
+    Serial.print(' ');
+    Serial.print(rc.getRightHor());
+    Serial.print(' ');
+    Serial.print(rc.getVRA());
+    Serial.print(' ');
+    Serial.print(rc.getVRB());
+    Serial.print(' ');
+    Serial.print(rc.getSWA());
+    Serial.print(' ');
+    Serial.print(rc.getSWB());
+    Serial.print(' ');
+    Serial.print(rc.getSWC());
+    Serial.print(' ');
+    Serial.print(rc.getSWD());
+    Serial.print('\n');
+
+    
 
     /*
     Serial.print(imu.read().yaw);
@@ -46,6 +70,8 @@ void loop() {
     Serial.print(imu.read().roll);
     Serial.print('\n');
     */
+
+    /*
 
     bool manualControl = (IBus.readChannel(6)-PWM_MIN > (PWM_MAX-PWM_MIN)/2);
 
@@ -111,4 +137,5 @@ void loop() {
     }
 
     motors.writeMotors(u1, u2, u3, u4);
+    */
 }

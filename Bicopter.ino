@@ -3,7 +3,7 @@
 #include "Constants.h"
 #include "Motors.h"
 #include "IMU.h" //requires I2Cdev https://github.com/jrowberg/i2cdevlib
-#include "RC.h" //requires FlySkyIBus https://github.com/jrowberg/i2cdevlib
+#include "RC.h" //requires FlySkyIBus https://gitlab.com/timwilkinson/FlySkyIBus
 
 Motors motors(LEFT_SERVO_PIN, RIGHT_SERVO_PIN, LEFT_BLDC_PIN, RIGHT_BLDC_PIN, LEFT_ENCODER_PIN, RIGHT_ENCODER_PIN);
 IMU imu(SDA_PIN, SCL_PIN, INTERRUPT_PIN);
@@ -24,6 +24,7 @@ void setup() {
     motors.attachMotors();
     rc.begin(Serial);
     if (!imu.initialize()) {
+        wdt_enable(WATCHDOG_TIME); //enable the watchdog to force the software to reset in the infinite loop
         while (true) { Serial.println("dmp initialization failure"); }
     }
     
@@ -92,5 +93,7 @@ void loop() {
     int u3 = rc.getSWA() ? BLDCSpeed + rollApplied : 0; //if switch A is turned off, set BLDC speed to 0
     int u4 = rc.getSWA() ? BLDCSpeed - rollApplied : 0;
 
-    motors.writeMotors(u1, u2, u3, u4);
+    if (rc.getReadyState()) { //if the RC receiver has started receiving data
+        motors.writeMotors(u1, u2, u3, u4);
+    }
 }

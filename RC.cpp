@@ -5,10 +5,18 @@
 
 void RC::begin(HardwareSerial& serial) {
     IBus.begin(Serial);
+    readyState = false;
 }
 
 void RC::loop() {
     IBus.loop();
+    if (!readyState && IBus.readChannel(0)!=0) { //adding this adds about 4-12 microseconds to the loop function call
+        readyState = true;
+    }
+}
+
+bool RC::getReadyState() {
+    return readyState;
 }
 
 int RC::getLeftVer() {

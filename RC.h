@@ -8,6 +8,7 @@ class RC {
     public:
         void begin(HardwareSerial& serial);
         void loop();
+        bool getReadyState();
         int getLeftVer(); //return value ranges from 0 to 1000
         int getLeftHor(); //return value ranges from 0 to 1000
         int getRightVer(); //return value ranges from 0 to 1000
@@ -18,6 +19,8 @@ class RC {
         bool getSWB(); //return true or false
         int getSWC(); //returns 0, 1 or 2
         bool getSWD(); //returns true or false
+    private:
+        bool readyState;
 };
 
 #endif

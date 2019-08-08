@@ -6,7 +6,7 @@
 #include "MPU6050DMP.h"
 
 struct IMUReading {
-    float yaw, pitch, roll;
+    float yaw, pitch, roll, yawDot, pitchDot, rollDot;
 };
 
 class IMU {
@@ -28,6 +28,7 @@ class IMU {
         Quaternion q;           // [w, x, y, z]         quaternion container
         VectorFloat gravity;    // [x, y, z]            gravity vector
         float ypr[3];           // [yaw, pitch, roll]   yaw/pitch/roll container and gravity vector
+        int16_t gyro[3];          //[yawDot, pitchDot, rollDot]
 };
 
 #endif

@@ -78,6 +78,7 @@ bool IMU::update() {
         mpu6050.dmpGetQuaternion(&q, fifoBuffer);
         mpu6050.dmpGetGravity(&gravity, &q);
         mpu6050.dmpGetYawPitchRoll(ypr, &q, &gravity);
+        mpu6050.dmpGetGyro(gyro, fifoBuffer);
     }
     else {
         return false;
@@ -89,6 +90,9 @@ IMUReading IMU::read() {
     returnVal.yaw = ypr[0] * 180/M_PI;
     returnVal.pitch = ypr[1] * 180/M_PI;
     returnVal.roll = ypr[2] * 180/M_PI;
+    returnVal.yawDot = -gyro[2];    //not sure what the units here are... (need to look into how MPU6050DMP.h is implemented)
+    returnVal.pitchDot = -gyro[1];
+    returnVal.rollDot = gyro[0];
     
     return returnVal;
 }

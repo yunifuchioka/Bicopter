@@ -54,25 +54,25 @@ void loop() {
         int rollDotDes = 0;
 
         //IMU readings
-        int yaw = imu.read().yaw;
-        int pitch = imu.read().pitch;
-        int roll = imu.read().roll;
-        int yawDot = 0; //TODO: sync these with gyro measurements
-        int pitchDot = 0;
-        int rollDot = 0;
+        float yaw = imu.read().yaw;
+        float pitch = imu.read().pitch;
+        float roll = imu.read().roll;
+        int yawDot = imu.read().yawDot;
+        int pitchDot = imu.read().pitchDot;
+        int rollDot = imu.read().rollDot;
 
         //PD feedback control parameters
-        int kpYaw = 0;
-        int kdYaw = 0;
-        int kpPitch = 2;
-        int kdPitch = 0;
-        int kpRoll = 2;
-        int kdRoll = 0;
+        float kpYaw = 0;
+        float kpPitch = 1.5;
+        float kpRoll = 1.5;
+        float kdYaw = 0;
+        float kdPitch = 0.0;
+        float kdRoll = 0;
 
         //PD feedback control
-        yawApplied = kpYaw*(yawDes-yaw) + kdYaw*(yawDotDes-yawDot);
-        pitchApplied = kpPitch*(pitchDes-pitch) + kdPitch*(pitchDotDes-pitchDot);
-        rollApplied = kpRoll*(rollDes-roll) + kdRoll*(rollDotDes-rollDot);
+        yawApplied = (int) kpYaw*(yawDes-yaw) + kdYaw*(yawDotDes-yawDot);
+        pitchApplied = (int) kpPitch*(pitchDes-pitch) + kdPitch*(pitchDotDes-pitchDot);
+        rollApplied = (int) kpRoll*(rollDes-roll) + kdRoll*(rollDotDes-rollDot);
     }
     else { //if switch D is not activated, motors are operated manually
         //set sensitivity of servo angles based on position of variable resistors

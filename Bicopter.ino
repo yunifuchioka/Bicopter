@@ -25,6 +25,7 @@ void setup() {
     rc.begin(Serial);
     if (!imu.initialize()) {
         wdt_enable(WATCHDOG_TIME); //enable the watchdog to force the software to reset in the infinite loop
+        wdt_reset();
         while (true) { Serial.println("dmp initialization failure"); }
     }
     
@@ -47,9 +48,9 @@ void loop() {
     if (rc.getSWD()) { //if switch D is activated, apply feedback control
         //target orientation
         int yawDes = 0;
-        int pitchDes = 0;
+        int pitchDes = map(rc.getRightVer(), SPEED_MIN, SPEED_MAX, 10, -10);
         int rollDes = 0;
-        int yawDotDes = 0;
+        int yawDotDes = map(rc.getRightVer(), SPEED_MIN, SPEED_MAX, 10, -10);
         int pitchDotDes = 0;
         int rollDotDes = 0;
 
@@ -63,16 +64,16 @@ void loop() {
 
         //PD feedback control parameters
         float kpYaw = 0;
-        float kpPitch = 1.5;
-        float kpRoll = 1.5;
-        float kdYaw = 0;
-        float kdPitch = 0.0;
-        float kdRoll = 0;
+        float kpPitch = 0.75;
+        float kpRoll = 0.75;
+        float kdYaw = rc.getVRA()*0.005;
+        float kdPitch = 0;
+        float kdRoll = 0.75;
 
         //PD feedback control
-        yawApplied = (int) kpYaw*(yawDes-yaw) + kdYaw*(yawDotDes-yawDot);
-        pitchApplied = (int) kpPitch*(pitchDes-pitch) + kdPitch*(pitchDotDes-pitchDot);
-        rollApplied = (int) kpRoll*(rollDes-roll) + kdRoll*(rollDotDes-rollDot);
+        yawApplied = (int) (kpYaw*(yawDes-yaw) + kdYaw*(yawDotDes-yawDot));
+        pitchApplied = (int) (kpPitch*(pitchDes-pitch) + kdPitch*(pitchDotDes-pitchDot));
+        rollApplied = (int) (kpRoll*(rollDes-roll) + kdRoll*(rollDotDes-rollDot));
     }
     else { //if switch D is not activated, motors are operated manually
         //set sensitivity of servo angles based on position of variable resistors

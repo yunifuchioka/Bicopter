@@ -18,7 +18,7 @@
 #define SCL_PIN A5
 
 //physical calibration parameters for motors
-#define LEFT_ANGLE_VERTICAL 130//value of the servo angle that results in the nacelle being vertical
+#define LEFT_ANGLE_VERTICAL 125//value of the servo angle that results in the nacelle being vertical
 #define RIGHT_ANGLE_VERTICAL 39
 #define LEFT_ENCODER_MIN 109 //the analog value of the feedback wire when u1 = -45
 #define LEFT_ENCODER_MAX 464 //the analog value of the feedback wire when u1 = 135

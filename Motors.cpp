@@ -16,14 +16,14 @@ void Motors::attachMotors() { //Servo.attach needs to be called in a function ou
     rightServo.attach(rightServoPin);
     leftBLDC.attach(leftBLDCPin);
     rightBLDC.attach(rightBLDCPin);
-    writeMotors(90,90,0,0);
+    writeMotors(0,0,0,0);
 }
 
 void Motors::writeMotors(int u1, int u2,  int u3, int u4) {
-    int leftServoVal = max(min(u1 - 90 + LEFT_ANGLE_VERTICAL, SERVO_MAX),SERVO_MIN);
-    int rightServoVal = max(min(-u2 + 90 + RIGHT_ANGLE_VERTICAL, SERVO_MAX),SERVO_MIN);
-    int leftBLDCVal = max(min(map(u3, SPEED_MIN, SPEED_MAX, PWM_MIN, PWM_MAX), PWM_MAX),PWM_MIN);
-    int rightBLDCVal = max(min(map(u4, SPEED_MIN, SPEED_MAX, PWM_MIN, PWM_MAX), PWM_MAX),PWM_MIN);
+    int leftServoVal = constrain(u1 + LEFT_ANGLE_VERTICAL, SERVO_MIN, SERVO_MAX);
+    int rightServoVal = constrain(-u2 + RIGHT_ANGLE_VERTICAL, SERVO_MIN, SERVO_MAX);
+    int leftBLDCVal = constrain(map(u3, SPEED_MIN, SPEED_MAX, PWM_MIN, PWM_MAX), PWM_MIN,PWM_MAX);
+    int rightBLDCVal = constrain(map(u4, SPEED_MIN, SPEED_MAX, PWM_MIN, PWM_MAX), PWM_MIN,PWM_MAX);
 
     leftServo.write(leftServoVal);
     rightServo.write(rightServoVal);

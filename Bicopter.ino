@@ -89,8 +89,8 @@ void loop() {
 
     int BLDCSpeed = rc.getLeftVer();
 
-    int u1 = 90 + pitchApplied - yawApplied;
-    int u2 = 90 + pitchApplied + yawApplied;
+    int u1 = pitchApplied - yawApplied;
+    int u2 = pitchApplied + yawApplied;
     int u3 = rc.getSWA() ? BLDCSpeed + rollApplied : 0; //if switch A is turned off, set BLDC speed to 0
     int u4 = rc.getSWA() ? BLDCSpeed - rollApplied : 0;
 

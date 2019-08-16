@@ -29,12 +29,28 @@ void Motors::writeMotors(int u1, int u2,  int u3, int u4) {
     rightServo.write(rightServoVal);
     leftBLDC.write(leftBLDCVal);
     rightBLDC.write(rightBLDCVal);
+
+    /*
+    //uncomment for encoder calibration
+    Serial.print(u1);
+    Serial.print('\t');
+    Serial.print(analogRead(leftEncoderPin));
+    Serial.print('\t');
+    Serial.print(getLeftAngle());
+    Serial.print('\t');
+    Serial.print(u2);
+    Serial.print('\t');
+    Serial.print(analogRead(rightEncoderPin));
+    Serial.print('\t');
+    Serial.print(getRightAngle());
+    Serial.print('\n');
+    */
 }
 
-int Motors::get_y1() {
-    return map(analogRead(leftEncoderPin),LEFT_ENCODER_MIN, LEFT_ENCODER_MAX, -45, 135);
+int Motors::getLeftAngle() {
+    return map(analogRead(leftEncoderPin),LEFT_ENCODER_MIN, LEFT_ENCODER_MAX, -135, 45);
 }
 
-int Motors::get_y2() {
-    return map(analogRead(rightEncoderPin), RIGHT_ENCODER_MIN, RIGHT_ENCODER_MAX, 135, -45);
+int Motors::getRightAngle() {
+    return map(analogRead(rightEncoderPin), RIGHT_ENCODER_MIN, RIGHT_ENCODER_MAX, 45, -135);
 }

@@ -10,8 +10,8 @@ class Motors {
         Motors(int leftServoPin, int rightServoPin, int leftBLDCPin, int rightBLDCPin, int leftEncoderPin, int rightEncoderPin);
         void attachMotors();
         void writeMotors(int u1, int u2,  int u3, int u4); //inputs u1~u4 correspond to desiredLeftAngle, desiredRightAngle (both in absolute coordinates), desiredLeftSpeed, desiredRightSpeed
-        int get_y1(); //returns reading of left encoder (in absolute coordinates)
-        int get_y2(); //returns reading of right encoder (in absolute coordinates)
+        int getLeftAngle(); //returns reading of left encoder (in absolute coordinates)
+        int getRightAngle(); //returns reading of right encoder (in absolute coordinates)
 
     private:
         int leftServoPin;

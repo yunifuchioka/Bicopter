@@ -20,10 +20,10 @@
 //physical calibration parameters for motors
 #define LEFT_ANGLE_VERTICAL 125//value of the servo angle that results in the nacelle being vertical
 #define RIGHT_ANGLE_VERTICAL 39
-#define LEFT_ENCODER_MIN 109 //the analog value of the feedback wire when u1 = -45
-#define LEFT_ENCODER_MAX 464 //the analog value of the feedback wire when u1 = 135
-#define RIGHT_ENCODER_MIN 115 //the analog value of the feedback wire when u2 = 135
-#define RIGHT_ENCODER_MAX 472 //the analog value of the feedback wire when u2 = -45
+#define LEFT_ENCODER_MIN 109 //the minimum analog value of the feedback wire for the left servo motor
+#define LEFT_ENCODER_MAX 455 //the maximum analog value of the feedback wire for the left servo motor
+#define RIGHT_ENCODER_MIN 117
+#define RIGHT_ENCODER_MAX 477
 
 #define PWM_MIN 1000 //min pulse width for PWM for servo signals
 #define PWM_MAX 2000 //max pulse width for PWM for servo signals

@@ -48,9 +48,9 @@ void loop() {
     if (rc.getSWD()) { //if switch D is activated, apply feedback control
         //target orientation
         int yawDes = 0;
-        int pitchDes = map(rc.getRightVer(), SPEED_MIN, SPEED_MAX, 10, -10);
-        int rollDes = 0;
-        int yawDotDes = map(rc.getRightVer(), SPEED_MIN, SPEED_MAX, 10, -10);
+        int pitchDes = map(rc.getRightVer(), SPEED_MIN, SPEED_MAX, 15, -15);
+        int rollDes =  5 + map(rc.getLeftHor(), SPEED_MIN, SPEED_MAX, -50, 50);
+        int yawDotDes = -5 + map(rc.getRightHor(), SPEED_MIN, SPEED_MAX, -15, 15);
         int pitchDotDes = 0;
         int rollDotDes = 0;
 
@@ -64,9 +64,9 @@ void loop() {
 
         //PD feedback control parameters
         float kpYaw = 0;
-        float kpPitch = 0.75;
-        float kpRoll = 0.75;
-        float kdYaw = rc.getVRA()*0.005;
+        float kpPitch = rc.getVRA()*0.005; //seems to work well at 12 o'clock position
+        float kpRoll = rc.getVRB()*0.005; //seems to work well at 12 o'clock position
+        float kdYaw = 0.2;
         float kdPitch = 0;
         float kdRoll = 0.75;
 
@@ -87,7 +87,7 @@ void loop() {
         rollApplied = map(rc.getLeftHor(), SPEED_MIN, SPEED_MAX, -300, 300)*rollSensitivity;
     }
 
-    int BLDCSpeed = rc.getLeftVer();
+    int BLDCSpeed = map(rc.getLeftVer(), SPEED_MIN, SPEED_MAX, SPEED_MIN, SPEED_MAX*0.75);
 
     int u1 = pitchApplied - yawApplied;
     int u2 = pitchApplied + yawApplied;

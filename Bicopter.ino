@@ -49,8 +49,8 @@ void loop() {
         //target orientation
         int yawDes = 0;
         int pitchDes = map(rc.getRightVer(), SPEED_MIN, SPEED_MAX, 15, -15);
-        int rollDes =  5 + map(rc.getLeftHor(), SPEED_MIN, SPEED_MAX, -50, 50);
-        int yawDotDes = -5 + map(rc.getRightHor(), SPEED_MIN, SPEED_MAX, -15, 15);
+        int rollDes =  10 + map(rc.getRightHor(), SPEED_MIN, SPEED_MAX, -50, 50);
+        int yawDotDes = -10 + map(rc.getLeftHor(), SPEED_MIN, SPEED_MAX, -25, 25);
         int pitchDotDes = 0;
         int rollDotDes = 0;
 
@@ -64,11 +64,11 @@ void loop() {
 
         //PD feedback control parameters
         float kpYaw = 0;
-        float kpPitch = rc.getVRA()*0.005; //seems to work well at 12 o'clock position
-        float kpRoll = rc.getVRB()*0.005; //seems to work well at 12 o'clock position
+        float kpPitch = 0.85;
+        float kpRoll = rc.getVRA()*0.005; //seems to work well at 12 o'clock position
         float kdYaw = 0.2;
         float kdPitch = 0;
-        float kdRoll = 0.75;
+        float kdRoll = rc.getVRB()*0.005;
 
         //PD feedback control
         yawApplied = (int) (kpYaw*(yawDes-yaw) + kdYaw*(yawDotDes-yawDot));

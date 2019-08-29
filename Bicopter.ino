@@ -49,8 +49,8 @@ void loop() {
         //target orientation
         int yawDes = 0;
         int pitchDes = map(rc.getRightVer(), SPEED_MIN, SPEED_MAX, 15, -15);
-        int rollDes =  10 + map(rc.getRightHor(), SPEED_MIN, SPEED_MAX, -50, 50);
-        int yawDotDes = -10 + map(rc.getLeftHor(), SPEED_MIN, SPEED_MAX, -25, 25);
+        int rollDes =  map(rc.getRightHor(), SPEED_MIN, SPEED_MAX, -50, 50); //10
+        int yawDotDes = -10 + map(rc.getLeftHor(), SPEED_MIN, SPEED_MAX, -25, 25); //-10
         int pitchDotDes = 0;
         int rollDotDes = 0;
 
@@ -63,12 +63,42 @@ void loop() {
         int rollDot = imu.read().rollDot;
 
         //PD feedback control parameters
-        float kpYaw = 0;
-        float kpPitch = 0.85;
-        float kpRoll = rc.getVRA()*0.005; //seems to work well at 12 o'clock position
-        float kdYaw = 0.2;
-        float kdPitch = 0;
-        float kdRoll = rc.getVRB()*0.005;
+        static float kpYaw = 0.85; //0; //12 oclock
+        static float kdYaw = 0.2; //2.5 dots
+        static float kpPitch = 0.85; //12 oclock
+        static float kdPitch = 0.2; //0; //2.5 dots
+        static float kpRoll = 1.88;
+        static float kdRoll = 1.88;
+
+        if (rc.getSWB()) { //gain setting mode
+            if (rc.getSWC() == 0) { //set k yaw values
+                kpYaw = rc.getVRA()*0.005;
+                kdYaw = rc.getVRB()*0.005;
+            }
+            else if (rc.getSWC() == 1) { //set k pitch values
+                kpPitch = rc.getVRA()*0.005;
+                kdPitch = rc.getVRB()*0.005;
+            }
+            else if (rc.getSWC() == 2) { //set k roll values
+                kpRoll = rc.getVRA()*0.005;
+                kdRoll = rc.getVRB()*0.005;
+            }
+        }
+
+        /*
+        Serial.print(kpYaw);
+        Serial.print(' ');
+        Serial.print(kdYaw);
+        Serial.print(' ');
+        Serial.print(kpPitch);
+        Serial.print(' ');
+        Serial.print(kdPitch);
+        Serial.print(' ');
+        Serial.print(kpRoll);
+        Serial.print(' ');
+        Serial.print(kdRoll);
+        Serial.print('\n');
+        */
 
         //PD feedback control
         yawApplied = (int) (kpYaw*(yawDes-yaw) + kdYaw*(yawDotDes-yawDot));
@@ -76,15 +106,10 @@ void loop() {
         rollApplied = (int) (kpRoll*(rollDes-roll) + kdRoll*(rollDotDes-rollDot));
     }
     else { //if switch D is not activated, motors are operated manually
-        //set sensitivity of servo angles based on position of variable resistors
-        double yawSensitivity = rc.getVRA()/1000.0;
-        //double pitchSensitivity = rc.getVRB()/1000.0;
-        double pitchSensitivity = 1.0;
-        double rollSensitivity = rc.getVRB()/1000.0;
 
-        yawApplied = (int) map(rc.getRightHor(), SPEED_MIN, SPEED_MAX, -45, 45)*yawSensitivity;
-        pitchApplied = (int) map(rc.getRightVer(), SPEED_MIN, SPEED_MAX, 45, -45)*pitchSensitivity;
-        rollApplied = map(rc.getLeftHor(), SPEED_MIN, SPEED_MAX, -300, 300)*rollSensitivity;
+        yawApplied = map(rc.getLeftHor(), SPEED_MIN, SPEED_MAX, -45, 45);
+        pitchApplied = map(rc.getRightVer(), SPEED_MIN, SPEED_MAX, 45, -45);
+        rollApplied = map(rc.getRightHor(), SPEED_MIN, SPEED_MAX, -300, 300);
     }
 
     int BLDCSpeed = map(rc.getLeftVer(), SPEED_MIN, SPEED_MAX, SPEED_MIN, SPEED_MAX*0.75);

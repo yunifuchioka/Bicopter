@@ -47,10 +47,11 @@ void loop() {
 
     if (rc.getSWD()) { //if switch D is activated, apply feedback control
         //target orientation
-        int yawDes = 0;
+        static float yawDes = 0;
+        yawDes += rc.getReadyState() ? rc.getLeftHor()*0.001 - 0.5  : 0;
         int pitchDes = map(rc.getRightVer(), SPEED_MIN, SPEED_MAX, 15, -15);
-        int rollDes =  map(rc.getRightHor(), SPEED_MIN, SPEED_MAX, -50, 50); //10
-        int yawDotDes = -10 + map(rc.getLeftHor(), SPEED_MIN, SPEED_MAX, -25, 25); //-10
+        int rollDes =  map(rc.getRightHor(), SPEED_MIN, SPEED_MAX, -15, 15);
+        int yawDotDes = 0;
         int pitchDotDes = 0;
         int rollDotDes = 0;
 
@@ -106,7 +107,6 @@ void loop() {
         rollApplied = (int) (kpRoll*(rollDes-roll) + kdRoll*(rollDotDes-rollDot));
     }
     else { //if switch D is not activated, motors are operated manually
-
         yawApplied = map(rc.getLeftHor(), SPEED_MIN, SPEED_MAX, -45, 45);
         pitchApplied = map(rc.getRightVer(), SPEED_MIN, SPEED_MAX, 45, -45);
         rollApplied = map(rc.getRightHor(), SPEED_MIN, SPEED_MAX, -300, 300);

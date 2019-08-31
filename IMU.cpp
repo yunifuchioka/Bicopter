@@ -76,9 +76,11 @@ bool IMU::update() {
             fifoCount -= packetSize;
         }
         mpu6050.dmpGetQuaternion(&q, fifoBuffer);
+        mpu6050.dmpGetAccel(&aa, fifoBuffer);
         mpu6050.dmpGetGravity(&gravity, &q);
         mpu6050.dmpGetYawPitchRoll(ypr, &q, &gravity);
         mpu6050.dmpGetGyro(gyro, fifoBuffer);
+        mpu6050.dmpGetLinearAccel(&aaReal, &aa, &gravity);
     }
     else {
         return false;
@@ -93,6 +95,9 @@ IMUReading IMU::read() {
     returnVal.yawDot = -gyro[2];    //not sure what the units here are... (need to look into how MPU6050DMP.h is implemented)
     returnVal.pitchDot = -gyro[1];
     returnVal.rollDot = gyro[0];
+    returnVal.accelX = aaReal.x;
+    returnVal.accelY = aaReal.y;
+    returnVal.accelZ = aaReal.z;
     
     return returnVal;
 }

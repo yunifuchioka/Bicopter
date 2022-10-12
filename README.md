@@ -12,7 +12,7 @@ Website and arduino code I wrote for a radio controlled bicopter drone that I ma
 
 ## Stability Control
 - Since the main objective of the project was to understand control design, I implemented the stability controller by programming an Arduino, rather than buying an off-the-shelf flight controller as is typically done with hobby drones.
-- Loosely inspired by the Bell Boeing V-22 Osprey, the drone stabilizes itself by tilting the propellers--synchronously for pitch, and in opposite directions for yaw.
+- Loosely inspired by the Bell Boeing V-22 Osprey, the drone stabilizes itself by tilting the propellers—synchronously for pitch, and in opposite directions for yaw.
 - Only after designing and building all of the hardware, I noticed a critical design flaw—the heavy BLDC motors are too far from the propeller tilt axis, causing the large inertia to tilt the entire body of the drone for pitch control, where ideally the body remains upright and the tilt of the drone body happens through propeller thrust. This issue was made worse with the slow response time of the servo motors used for tilt control.
 - This meant that the initial prototype was incredibly unstable in pitch. This led to many crashes and broken parts during testing and development (I would not recommend building drones out of balsa wood...).
 - When I realized that software/control design alone could not stabilize the drone, I added a rear wing to act as an aerodynamic damper for pitch-axis rotation. This enabled the drone to fly stably, although requiring decent piloting skills.
@@ -27,7 +27,7 @@ Website and arduino code I wrote for a radio controlled bicopter drone that I ma
 ![gallery5](img/gallery5.JPG)
 ![gallery6](img/gallery6.JPG)
 ![gallery7](img/gallery7.JPG)
-![gallery8](img/gallery8.JPG)
+![gallery8](img/gallery8.png)
 
 ![fuselage](img/fuselage.JPG)
 ![mainBar](img/mainBar.JPG)
